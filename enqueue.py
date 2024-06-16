@@ -32,14 +32,19 @@ def on_press(key: keyboard.KeyCode):
       keyControl.release('v')
       i += 1
     if key ==  keyboard.Key.esc:
+      listener.stop()
       return False
   except AttributeError:
     pass
-
-listener = keyboard.Listener(
-    on_press=on_press,
-    on_release=on_release)
+def create_listener() -> keyboard.Listener:
+  return keyboard.Listener(
+      on_press=on_press,
+      on_release=on_release)
+listener = create_listener()
 listener.start()
 terminate = ""
 while terminate != "q":
-  terminate = input("Input q to terminate program:  ")
+  terminate = input("Input q to terminate and s to start listener again: ")
+  if terminate == "s":
+    listener = create_listener()
+    listener.start()
