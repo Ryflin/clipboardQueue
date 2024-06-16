@@ -1,14 +1,20 @@
 import pyperclip
 import json
-import types
 from pynput import keyboard
 from pynput.keyboard import Controller
 
 keyControl = Controller()
 queue = []
-
-with open("queue.json", "r") as f:
-  queue = json.load(f)
+try:
+  with open("queue.json", "r") as f:
+    queue = json.load(f)
+except:
+  print("It looks like there is nothing in the input queue\n")
+  qu = input("Enter an item, press q then ENTER to exit: ")
+  while qu != "q":
+    queue.append(qu)
+    qu = input("Enter an item, press q then ENTER to exit: ")
+  json.dump(queue, open("queue.json", "w"))
 i = 0
 print(queue)
 def on_release(key: keyboard.KeyCode):
@@ -18,14 +24,12 @@ def on_release(key: keyboard.KeyCode):
 def on_press(key: keyboard.KeyCode):
   global i
   try:
-    if key == keyboard.Key.ctrl_r:
+    if key == keyboard.Key.ctrl_l:
       if i == len(queue):
         i = 0
       pyperclip.copy(queue[i])
-      keyControl.press(keyboard.Key.ctrl)
       keyControl.press('v')
       keyControl.release('v')
-      keyControl.release(keyboard.Key.ctrl)
       i += 1
     if key ==  keyboard.Key.esc:
       return False
