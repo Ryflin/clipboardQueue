@@ -26,52 +26,36 @@ def fill_form2():
   global queue, ids
   web = webdriver.Firefox()
   site = web.get("https://www.ohiopilotexaminer.com/booking-calendar/cfi-amel-asel-added-class?referral=service_list_widget")
-  if "Booking%20Form" not in web.current_url:
-    try:
-      web.find_element(By.ID, "checkbox-160").click()
-    except Exception as e:
-      print(e)
-      pass
-    try:
-      web.find_element(By.ID, "checkbox-177").click()
-    except Exception as e:
-      print(e)
-      pass
-    try:
-      web.find_element(By.CLASS_NAME, "sk7DQ7V").send_keys("+1")
-    except Exception as e:
-      print(e)
-      pass
-    for i in range(0, len(queue)):
-      web.find_element(By.ID, queue[i]["id"]).send_keys(queue[i]["value"])
-  else:
+  while "booking-form" not in web.current_url:
     time.sleep(.1)
+  time.sleep(.5)
+
+  try:
+    elements = web.find_elements(By.CLASS_NAME, "sk7DQ7V")
+    if len(elements) > 2:
+      elements[2].send_keys("+1")
+  except Exception as e:
+    print(e, '\n')
+    pass
+  for i in range(0, len(queue)):
+    web.find_element(By.ID, queue[i]["id"]).send_keys(queue[i]["value"])
+  # try the two checkboxes
+  try:
+    checkbox = web.find_element(By.ID, "checkbox-160")
+    checkbox.send_keys(" ")
+  except Exception as e:
+    print(e, '\n')
+    pass
+  try:
+    web.find_element(By.ID, "checkbox-177").send_keys(" ")
+  except Exception as e:
+    print(e, '\n')
+    pass
   
 fill_form2()  
 
-def fill_form():
-  global queue
-  controller = pynput.keyboard.Controller()
-  for i in range(0, 10):
-    controller.press(pynput.keyboard.Key.tab)
-    controller.release(pynput.keyboard.Key.tab)
-  for i in queue:
-    controller.type(i)
-    controller.press(pynput.keyboard.Key.tab)
-    controller.release(pynput.keyboard.Key.tab)
-  controller.type("\n")
-
-def on_presss(key: pynput.keyboard.Key):
-  try:
-    if key.char == "p":
-      fill_form()
-    if key.char == "q":
-      return False
-  except AttributeError:
-    pass
-
-listener = pynput.keyboard.Listener(on_press=on_presss)
 user_input = input("Press s to start listener for p, q to quit: ")
 while user_input != "q":
-  listener.start()
+  # listener.start()
+  fill_form2()
   user_input = input("Press s to start listener for p, q to quit: ")
