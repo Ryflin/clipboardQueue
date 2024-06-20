@@ -2,6 +2,7 @@ import pynput
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import json
+import time
 
 # hardcoded queue
 # queue = ["Daniel Schley", "schleyflies@gmail.com", "4199890281", "Cessna 172N", "N733KB", "C1759305", "4771093", "JonathanJones", "4199893853", "jonjones1333@gmail.com" ]
@@ -24,24 +25,27 @@ print(queue)
 def fill_form2():
   global queue, ids
   web = webdriver.Firefox()
-  site = web.get("http://127.0.0.1:5500/formSite/Booking%20Form%20_%20Ohio%20Pilot%20Examiner2_files/Booking%20Form%20_%20Ohio%20Pilot%20Examiner2%20copy.html")
-  try:
-    web.find_element(By.ID, "checkbox-160").click()
-  except Exception as e:
-    print(e)
-    pass
-  try:
-    web.find_element(By.ID, "checkbox-177").click()
-  except Exception as e:
-    print(e)
-    pass
-  try:
-    web.find_element(By.CLASS_NAME, "sk7DQ7V").send_keys("+1")
-  except Exception as e:
-    print(e)
-    pass
-  for i in range(0, len(queue)):
-    web.find_element(By.ID, queue[i]["id"]).send_keys(queue[i]["value"])
+  site = web.get("https://www.ohiopilotexaminer.com/booking-calendar/cfi-amel-asel-added-class?referral=service_list_widget")
+  if "Booking%20Form" not in web.current_url:
+    try:
+      web.find_element(By.ID, "checkbox-160").click()
+    except Exception as e:
+      print(e)
+      pass
+    try:
+      web.find_element(By.ID, "checkbox-177").click()
+    except Exception as e:
+      print(e)
+      pass
+    try:
+      web.find_element(By.CLASS_NAME, "sk7DQ7V").send_keys("+1")
+    except Exception as e:
+      print(e)
+      pass
+    for i in range(0, len(queue)):
+      web.find_element(By.ID, queue[i]["id"]).send_keys(queue[i]["value"])
+  else:
+    time.sleep(.1)
   
 fill_form2()  
 
